@@ -1,3 +1,5 @@
+.vscode/
 keep_local/
+/build/
 /init_gnu_env.bat
 /make.bat
