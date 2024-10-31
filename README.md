@@ -6,7 +6,7 @@
 
 ## 项目历史
 
-前有更加简单的实现，即bat脚本，但无法加上图标，不那么美观。原先在作者的[Gist中](https://gist.github.com/LiuJiewenTT/ef6966810da80200fce8a3e8ff13e69e)有一份，叫做[`Enya_Switch`](alters/Enya_Switch/REAMDE.md)，启动和结束都是单独的脚本。也就是说，如果创建快捷方式到桌面，可能需要两个快捷方式。另外，原脚本需要玩家手动附上管理员权限，不方便。
+前有更加简单的实现，即bat脚本，但无法加上图标，不那么美观。原先在作者的[Gist中](https://gist.github.com/LiuJiewenTT/ef6966810da80200fce8a3e8ff13e69e)有一份，叫做[`Enya_Switch`](alters/Enya_Switch/README.md)，启动和结束都是单独的脚本。也就是说，如果创建快捷方式到桌面，可能需要两个快捷方式。另外，原脚本需要玩家手动附上管理员权限，不方便。
 
 ## 项目介绍
 

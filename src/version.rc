@@ -1,7 +1,7 @@
 #pragma code_page(65001)
 
 // 定义产品及程序名称
-#define PROGRAM_NAME_PRETTY         "尘白禁区小开关\0"
+#define PROGRAM_NAME_PRETTY         "尘白禁区小开关😎😋\0"
 #define INTERNAL_PROGRAM_NAME       "CBJQ_XiaoKaiGuan\0"
 #define ORIGINAL_FILE_NAME          "CBJQ_XiaoKaiGuan.exe\0"
 // 定义文件版本
