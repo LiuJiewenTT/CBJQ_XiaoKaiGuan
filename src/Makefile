@@ -4,6 +4,7 @@
 CC = gcc.exe
 CPPC = g++.exe
 WINDRES = windres.exe
+MAKE = make
 
 # 编译选项
 CFLAGS = -fdiagnostics-color=always -I"./"
@@ -35,7 +36,7 @@ build/build/main.o: src/main.c
 build/build/utils.o: src/utils.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-build/build/program_info.o: src/program_info.c
+build/build/program_info.o: src/program_info.c flag_every_time
 	$(CC) $(CFLAGS) -c $< -o $@
 	
 build/build/version.o: src/version.rc
@@ -60,4 +61,8 @@ prepare_dir:
 	$(call mkdir_withcheck,"build\build")
 	$(call mkdir_withcheck,"build\dest")
 
-.PHONY: all clean prepare_dir
+flag_every_time:
+	@ REM "flag_every_time" # @ echo "flag_every_time"	# This will be executed every time
+	
+
+.PHONY: all clean prepare_dir flag_every_time
