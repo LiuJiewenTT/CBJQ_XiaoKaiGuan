@@ -1,5 +1,6 @@
 #include "utils.h"
 #include <winnls.h>
+#include <stdio.h>
 #include <unistd.h>
 
 
@@ -16,13 +17,12 @@ wchar_t *convertCharToWChar(const char* message){
 }
 
 
-void printWCharFromCharAndShow(const char *para_str, wchar_t *para_pointer_wstr, const wchar_t *para_MessageBox_Title, int para_MessageBox_flag, int para_flag_free_wstr){
+void printWCharFromCharAndShow(const char *para_str, wchar_t *para_pointer_wstr, const wchar_t *para_MessageBox_Title, int para_MessageBox_flag, int para_flag_free_wstr_message){
     para_pointer_wstr = convertCharToWChar(para_str);
-    wprintf(L"%s\n", para_pointer_wstr);
-
+    printf("debug: %s\n", para_str);
     printWCharAndShow(para_pointer_wstr, para_MessageBox_Title, para_MessageBox_flag);
 
-    if( para_flag_free_wstr == TRUE ){
+    if( para_flag_free_wstr_message == TRUE ){
         free2NULL(para_pointer_wstr);
     }
     return;
@@ -30,7 +30,7 @@ void printWCharFromCharAndShow(const char *para_str, wchar_t *para_pointer_wstr,
 
 
 void printWCharAndShow(const wchar_t *para_str, const wchar_t *para_MessageBox_Title, int para_MessageBox_flag){
-    wprintf(L"%s\n", para_str);
+    wprintf(L"%ls\n", para_str);
     MessageBox(NULL, para_str, para_MessageBox_Title, para_MessageBox_flag);
     return;
 }

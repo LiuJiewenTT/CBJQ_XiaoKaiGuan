@@ -52,7 +52,8 @@ int main(int argc, char **argv) {
             return EXIT_SUCCESS;
         }
         else {
-            printf("Failed to relaunch with elevated privileges or relaunched process returned failed.\n");
+            // printf("Failed to relaunch with elevated privileges or relaunched process returned failed.\n");
+            printWCharFromCharAndShow("请求管理员权限失败或运行后进程返回失败。", pw1, pw2, MB_OK | MB_ICONERROR, TRUE);
             return EXIT_FAILURE;
         }
     }
@@ -62,7 +63,8 @@ int main(int argc, char **argv) {
     fp_localization = fopen("localization.txt", "r");
 
     if ( fp_localization == NULL ) {
-        printf("Failed to open localization.txt.\n");
+        // printf("Failed to open localization.txt.\n");
+        printWCharFromCharAndShow("无法打开文件 localization.txt。", pw1, pw2, MB_OK | MB_ICONERROR, TRUE);
         return EXIT_FAILURE;
     }
     memset(tempstr1, 0, TEMPSTR_LENGTH);
@@ -87,18 +89,15 @@ int main(int argc, char **argv) {
     free2NULL(pw1);
 
     if ( ret == IDNO ) {
-        printf("User canceled.\n");
+        // printf("User canceled.\n");
+        printWCharFromCharAndShow("用户取消。", pw1, pw2, MB_OK | MB_ICONERROR, TRUE);
         return EXIT_FAILURE;
     }
 
     // 写入内容
     fp_localization = fopen("localization.txt", "w");
     if ( fp_localization == NULL ) {
-        sprintf(tempstr1, "无法打开文件 localization.txt\n");
-        printf("%s", tempstr1);
-        pw1 = WCharChar(tempstr1);
-        MessageBox(NULL, pw1, pw2, MB_OK | MB_ICONERROR);
-        free2NULL(pw1);
+        printWCharFromCharAndShow("无法打开文件 localization.txt。", pw1, pw2, MB_OK | MB_ICONERROR, TRUE);
         return EXIT_FAILURE;
     }
     fputs(tempstr2, fp_localization);
