@@ -4,7 +4,7 @@
 CC = gcc.exe
 CPPC = g++.exe
 WINDRES = windres.exe
-MAKE = make
+MAKE = mingw32-make.exe
 
 # 目录设置
 SRC_DIR = src/
@@ -14,6 +14,7 @@ DEST_DIR = build/dest/
 
 # 编译选项
 CFLAGS = -fdiagnostics-color=always -I"./"
+DEBUG_CFLAGS = -g -O0 -DDEBUG $(CFLAGS)
 
 # 源文件和目标文件
 SRC = $(SRC_DIR)main.c
@@ -26,9 +27,13 @@ $(BUILD_DIR)program_info.o
 
 # 目标可执行文件
 TARGET = $(DEST_DIR)CBJQ_XiaoKaiGuan.exe
+DEBUG_TARGET = $(DEST_DIR)CBJQ_XiaoKaiGuan_debug.exe
 
 # 目标规则
 all: $(TARGET)
+
+all_debug: flag_every_time
+	$(MAKE) -C $(CURDIR) -f .\src\Makefile CFLAGS="$(DEBUG_CFLAGS)" TARGET=$(DEBUG_TARGET) all
 
 # 链接目标文件生成可执行文件
 $(TARGET): $(OBJ)
@@ -100,4 +105,4 @@ flag_every_time:
 	@ REM "flag_every_time" # @ echo "flag_every_time"	# This will be executed every time
 	
 
-.PHONY: all clean prepare_dir flag_every_time
+.PHONY: all clean prepare_dir flag_every_time all_debug

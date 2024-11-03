@@ -99,3 +99,195 @@ BOOL checkIfLocaleCodePageMatchCurrentOutputCodePage() {
 }
 
 
+// 获取当前用户的 SID
+BOOL GetCurrentUserSid(PSID* ppSid) {
+    HANDLE hToken = NULL;
+    if (!OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &hToken)) {
+        return FALSE;
+    }
+
+    DWORD dwSize = 0;
+    GetTokenInformation(hToken, TokenUser, NULL, 0, &dwSize);
+    PTOKEN_USER ptu = (PTOKEN_USER)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, dwSize);
+    if (!ptu || !GetTokenInformation(hToken, TokenUser, ptu, dwSize, &dwSize)) {
+        if (ptu) {
+            HeapFree(GetProcessHeap(), 0, ptu);
+        }
+        CloseHandle(hToken);
+        return FALSE;
+    }
+
+    // 分配 SID 的内存并复制
+    DWORD sidSize = GetSidLengthRequired(((SID*)(ptu->User.Sid))->SubAuthorityCount);
+    *ppSid = (PSID)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, sidSize);
+    if (*ppSid) {
+        CopySid(sidSize, *ppSid, ptu->User.Sid);
+    }
+
+    HeapFree(GetProcessHeap(), 0, ptu);
+    CloseHandle(hToken);
+    return TRUE;
+}
+
+#define MAX_TOKEN_USER_SIZE (sizeof(TOKEN_USER) + MAX_SID_SIZE)
+
+// 检查用户是否有相应进程是否正在运行，NULL用户SID表示检查所有用户的进程
+BOOL IsProcessRunning(const wchar_t* processName, PSID pCurrentUserSid, int *countResult) {
+    HANDLE hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPALL, 0);
+    if (hSnapshot == INVALID_HANDLE_VALUE) {
+        return FALSE;
+    }
+
+    PROCESSENTRY32W pe;
+    pe.dwSize = sizeof(PROCESSENTRY32W);
+
+    int cnt = 0;
+    BOOL found = FALSE;
+
+    HANDLE hHeap = NULL;
+    PTOKEN_USER ptu = NULL;
+    HANDLE hProcess = NULL;
+    HANDLE hToken = NULL;
+    DWORD dwSize = 0;
+    if (pCurrentUserSid != NULL) {
+        // 复用堆句柄
+        hHeap = GetProcessHeap();
+        ptu = (PTOKEN_USER)HeapAlloc(hHeap, HEAP_ZERO_MEMORY, MAX_TOKEN_USER_SIZE);
+    }
+    
+    if (Process32First(hSnapshot, &pe)) {
+        do {
+            if ( pCurrentUserSid == NULL ) {
+                if (wcscmp(processName, pe.szExeFile) == 0) {
+                    // CloseHandle(hSnapshot);
+                    ++cnt;
+                    found = TRUE;
+                }
+            } else {
+                if (wcscmp(processName, pe.szExeFile) == 0) {
+                    // 获取进程句柄
+                    hProcess = OpenProcess(PROCESS_QUERY_INFORMATION, FALSE, pe.th32ProcessID);
+                    if (hProcess) {
+                        // 获取进程的拥有者 SID
+                        hToken = NULL;
+                        if (OpenProcessToken(hProcess, TOKEN_QUERY, &hToken)) {
+                            dwSize = 0;
+                            GetTokenInformation(hToken, TokenUser, NULL, 0, &dwSize);
+                            if (GetTokenInformation(hToken, TokenUser, ptu, dwSize, &dwSize)) {
+                                // 比较 SID
+                                if (EqualSid(pCurrentUserSid, ptu->User.Sid)) {
+                                    ++cnt;
+                                    found = TRUE;
+                                }
+                            }
+                            CloseHandle(hToken);
+                        }
+                        CloseHandle(hProcess);
+                    }
+                }
+            }
+        } while (Process32Next(hSnapshot, &pe));
+    }
+
+    if (ptu) {
+        HeapFree(hHeap, 0, ptu);
+    }
+    CloseHandle(hSnapshot);
+    if (countResult) {
+        *countResult = cnt;
+    }
+    return found;
+}
+
+
+// 检查用户是否有相应进程是否正在运行
+BOOL IsProcessRunning_User(const wchar_t* processName) {
+    PSID pCurrentUserSid = NULL;
+    if (!GetCurrentUserSid(&pCurrentUserSid)) {
+        printf("Error getting current user SID.\n");
+        return FALSE;
+    }
+
+    BOOL result = IsProcessRunning(processName, pCurrentUserSid, NULL);
+    if (pCurrentUserSid) {
+        FreeSid(pCurrentUserSid);
+    }
+    return result;
+}
+
+
+INT CountProcessRunning_Global(const wchar_t* processName) {
+    INT cnt = 0;
+    IsProcessRunning(processName, NULL, &cnt);
+    return cnt;
+}
+
+
+INT CountProcessRunning_User(const wchar_t* processName) {
+    PSID pCurrentUserSid = NULL;
+    if (!GetCurrentUserSid(&pCurrentUserSid)) {
+        printf("Error getting current user SID.\n");
+        return -1;
+    }
+
+    INT cnt = 0;
+    IsProcessRunning(processName, pCurrentUserSid, &cnt);
+    if (pCurrentUserSid) {
+        FreeSid(pCurrentUserSid);
+    }
+    return cnt;
+}
+
+
+// 重定向标准输出到文件
+BOOL RedirectStdOutput(const wchar_t* outputFilePath, BOOL append) {
+    if (outputFilePath == NULL) {
+        printf("Output file path cannot be NULL.\n");
+        return FALSE;
+    }
+
+    HANDLE hFile = CreateFile(outputFilePath, 
+                                append ? FILE_APPEND_DATA : GENERIC_WRITE, 
+                                FILE_SHARE_READ | FILE_SHARE_WRITE, 
+                                NULL, 
+                                append ? OPEN_ALWAYS : CREATE_ALWAYS, 
+                                FILE_ATTRIBUTE_NORMAL, 
+                                NULL);
+    
+    if (hFile == INVALID_HANDLE_VALUE) {
+        printf("Error opening file: %u\n", GetLastError());
+        return FALSE;
+    }
+
+    // 重定向标准输出
+    // if (!SetStdHandle(STD_OUTPUT_HANDLE, hFile)) {
+    //     printf("Error redirecting output: %u\n", GetLastError());
+    //     CloseHandle(hFile);
+    //     return FALSE;
+    // }
+    
+    // 获取与文件句柄关联的低级文件描述符
+    int fileDescriptor = _open_osfhandle((intptr_t)hFile, _O_TEXT);
+    if (fileDescriptor == -1) {
+        wprintf(L"Error obtaining file descriptor.\n");
+        CloseHandle(hFile);
+        return FALSE;
+    }
+
+    // 使用 _dup2 将 stdout 重定向到新的文件描述符
+    if (_dup2(fileDescriptor, _fileno(stdout)) != 0) {
+        wprintf(L"Error redirecting stdout.\n");
+        CloseHandle(hFile);
+        return FALSE;
+    }
+
+    // 使用 _dup2 将 stderr 也重定向到文件（可选）
+    if (_dup2(fileDescriptor, _fileno(stderr)) != 0) {
+        wprintf(L"Error redirecting stderr.\n");
+        CloseHandle(hFile);
+        return FALSE;
+    }
+    return TRUE;
+}
+
+

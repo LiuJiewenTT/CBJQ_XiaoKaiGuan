@@ -19,40 +19,77 @@ int flag_unhide = 0;
 
 
 int main(int argc, char **argv) {
+    // 关闭输出缓冲
+    setbuf(stdout, NULL);
+    setbuf(stderr, NULL);
+    
     printf("arg[0]=%s\n", argv[0]);
 
     HWND hwnd = GetConsoleWindow();
 
     wchar_t *pw1 = NULL;
     wchar_t *pw2 = NULL;
+    char *p1 = NULL;
     char tempstr1[TEMPSTR_LENGTH];
     char tempstr2[TEMPSTR_LENGTH];
     char tempstr3[TEMPSTR_LENGTH];
     char tempstr4[TEMPSTR_LENGTH];
     char tempstr5[TEMPSTR_LENGTH];
     int ret = 0;
+    int lastOutputCP = 0;
+    int lastCP = 0;
+    int process_global_cnt = 0;
+    int process_user_cnt = 0;
+    char path_delimeter= '\\';
+    char process_name[MAX_PATH];
+    char process_working_dir[MAX_PATH];
+    wchar_t *pw_process_name = NULL;
 
     int var_localization = -1;
     int var_localization_new = -1;
 
+    setlocale(LC_CTYPE, "C.UTF-8");
+
+    if ( ( lastOutputCP = GetConsoleOutputCP() ) != CP_UTF8 ) {
+        printf("Setting console output code page from (%d) to UTF-8.\n", lastOutputCP);
+        SetConsoleOutputCP(CP_UTF8);
+    }
+    if ( ( lastCP = GetConsoleCP() ) != CP_UTF8 ) {
+        printf("Setting console code page from (%d) to UTF-8.\n", lastCP);
+        SetConsoleCP(CP_UTF8);
+    }
+
+    memset(process_name, 0, MAX_PATH);
+    memset(process_working_dir, 0, MAX_PATH);
+
+    // 获取程序文件名和程序所在目录。
+    p1 = strrchr(argv[0], path_delimeter);
+    if( p1 == NULL ){
+        strcpy(process_name, argv[0]);
+        sprintf(process_working_dir, ".\\");
+    }
+    else {
+        strcpy(process_name, p1+1);
+        strncpy(process_working_dir, argv[0], p1-argv[0]);
+        process_working_dir[p1-argv[0]] = 0;
+    }
+    pw_process_name = WCharChar(process_name);
+
     sprintf(tempstr1, "%s.unhide", argv[0]);
     flag_unhide = file_exists(tempstr1);
     if ( !flag_unhide ) {
-        ShowWindow(hwnd, SW_HIDE);
+        // ShowWindow(hwnd, SW_HIDE);
         sprintf(tempstr1, "%s.log", argv[0]);
-        freopen(tempstr1, "w", stdout);
+        pw1 = WCharChar(tempstr1);
+        // freopen(tempstr1, "w", stdout);
+        process_global_cnt = CountProcessRunning_Global(pw_process_name);
+        ret = RedirectStdOutput(pw1, (process_global_cnt > 1));
+        free2NULL(pw1);
+        if ( ret == FALSE ) {
+            printWCharFromCharAndShow("无法重定向输出。", pw1, pw2, MB_OK | MB_ICONERROR, TRUE);
+            return EXIT_FAILURE;
+        }
         printf("hide. [PID=%d].\n", getpid());
-    }
-
-    setlocale(LC_CTYPE, "C.UTF-8");
-    
-    if ( ( ret = GetConsoleOutputCP() ) != CP_UTF8 ) {
-        printf("Setting console output code page from (%d) to UTF-8.\n", ret);
-        SetConsoleOutputCP(CP_UTF8);
-    }
-    if ( ( ret = GetConsoleCP() ) != CP_UTF8 ) {
-        printf("Setting console code page from (%d) to UTF-8.\n", ret);
-        SetConsoleCP(CP_UTF8);
     }
 
     pw2 = WCharChar(PROGRAM_NAME_PRETTY);
@@ -60,6 +97,13 @@ int main(int argc, char **argv) {
     #define program_info_divider "----------------------------------------------------------------\n"
     printf("%s%hs\n%s", program_info_divider, PROGRAM_INFO_STRING, program_info_divider);
     #undef program_info_divider
+
+    process_user_cnt = CountProcessRunning_User(pw_process_name);
+    if ( process_user_cnt > 2 ) {
+        // 展示程序信息
+        printWCharFromCharAndShow(PROGRAM_INFO_STRING, pw1, pw2, MB_OK | MB_ICONINFORMATION, TRUE);
+        return EXIT_SUCCESS;
+    }
 
     // 检查自身UAC授权情况
     if (IsRunAsAdmin()) {

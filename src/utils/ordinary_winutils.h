@@ -8,6 +8,10 @@
 #include <wchar.h>
 #include <winnls.h>
 #include <unistd.h>
+#include <tlhelp32.h>
+#include <accctrl.h>
+#include <sddl.h>
+#include <fcntl.h>
 #include "ordinaries.h"
 
 
@@ -31,4 +35,19 @@ UINT getLocaleCodePage();
 BOOL checkIfCurrentOutputCodePageIsDefault();
 
 BOOL checkIfLocaleCodePageMatchCurrentOutputCodePage();
+
+
+BOOL GetCurrentUserSid(PSID* ppSid);
+
+BOOL IsProcessRunning(const wchar_t* processName, PSID pCurrentUserSid, int *countResult);
+
+#define IsProcessRunning_Global(processName) (IsProcessRunning(processName, NULL, NULL))
+
+BOOL IsProcessRunning_User(const wchar_t* processName);
+
+INT CountProcessRunning_Global(const wchar_t* processName);
+
+INT CountProcessRunning_User(const wchar_t* processName);
+
+BOOL RedirectStdOutput(const wchar_t* outputFilePath, BOOL append);
 
