@@ -25,11 +25,11 @@ BOOL IsRunAsAdmin() {
 
 
 // 以提升权限运行当前进程
-BOOL RelaunchWithElevation(int argc, char *argv[]) {
+INT RelaunchWithElevation(int argc, char *argv[]) {
     wchar_t szPath[MAX_PATH];
     if (!GetModuleFileName(NULL, szPath, MAX_PATH)) {
         printf("GetModuleFileName failed (%d).\n", GetLastError());
-        return FALSE;
+        return EXIT_FAILURE;
     }
 
     // 构建命令行参数
@@ -64,7 +64,7 @@ BOOL RelaunchWithElevation(int argc, char *argv[]) {
 
     if (!ShellExecuteEx(&sei)) {
         printf("ShellExecuteEx failed (%d).\n", GetLastError());
-        return FALSE;
+        return EXIT_FAILURE;
     }
 
     // return TRUE;
@@ -80,17 +80,13 @@ BOOL RelaunchWithElevation(int argc, char *argv[]) {
     if (!GetExitCodeProcess(sei.hProcess, &exitCode)) {
         printf("GetExitCodeProcess failed (%d).\n", GetLastError());
         CloseHandle(sei.hProcess);
-        return FALSE;
+        return EXIT_FAILURE;
     }
 
     CloseHandle(sei.hProcess);
 
     // 判断新进程的返回值
-    if (exitCode == EXIT_SUCCESS) {
-        return TRUE;
-    } else {
-        return FALSE;
-    }
+    return exitCode;
 }
 
 #undef TEMPWSTR_LENGTH

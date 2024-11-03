@@ -78,21 +78,17 @@ int main(int argc, char **argv) {
     sprintf(tempstr1, "%s.unhide", argv[0]);
     flag_unhide = file_exists(tempstr1);
     if ( !flag_unhide ) {
-        // ShowWindow(hwnd, SW_HIDE);
+        ShowWindow(hwnd, SW_HIDE);
         sprintf(tempstr1, "%s.log", argv[0]);
-        // pw1 = WCharChar(tempstr1);
-        // freopen(tempstr1, "w", stdout);
         process_global_cnt = CountProcessRunning_Global(pw_process_name);
         ret = RedirectOutput(tempstr1, (process_global_cnt > 1), stdout);
-        // free2NULL(pw1);
         if ( ret == FALSE ) {
-            printWCharFromCharAndShow("无法重定向输出。", pw1, pw2, MB_OK | MB_ICONERROR, TRUE);
+            printWCharFromCharAndShow("无法重定向标准输出。", pw1, pw2, MB_OK | MB_ICONERROR, TRUE);
             return EXIT_FAILURE;
         }
         ret = RedirectOutput(tempstr1, (process_global_cnt > 1), stderr);
-        // free2NULL(pw1);
         if ( ret == FALSE ) {
-            printWCharFromCharAndShow("无法重定向输出。", pw1, pw2, MB_OK | MB_ICONERROR, TRUE);
+            printWCharFromCharAndShow("无法重定向标准错误输出。", pw1, pw2, MB_OK | MB_ICONERROR, TRUE);
             return EXIT_FAILURE;
         }
         printf("hide. [PID=%d].\n", getpid());
@@ -117,14 +113,17 @@ int main(int argc, char **argv) {
     } else {
         printf("This process does not have UAC authorization.\n");
         printf("Relaunching with UAC request.\n");
-        if( RelaunchWithElevation(argc, argv) ){
+        ret = RelaunchWithElevation(argc, argv);
+        if( ret == EXIT_SUCCESS ){
             printf("Relaunched process with elevated privileges worked well.\n");
             return EXIT_SUCCESS;
         }
-        else {
+        else if ( ret == EXIT_FAILURE ) {
             // printf("Failed to relaunch with elevated privileges or relaunched process returned failed.\n");
             printWCharFromCharAndShow("请求管理员权限失败或运行后进程返回失败。", pw1, pw2, MB_OK | MB_ICONERROR, TRUE);
             return EXIT_FAILURE;
+        } else if ( ret == EXIT_CANCELLED ) {
+            return EXIT_CANCELLED;
         }
     }
 
@@ -160,8 +159,8 @@ int main(int argc, char **argv) {
 
     if ( ret == IDNO ) {
         // printf("User canceled.\n");
-        printWCharFromCharAndShow("用户取消。", pw1, pw2, MB_OK | MB_ICONERROR, TRUE);
-        return EXIT_FAILURE;
+        printWCharFromCharAndShow("操作已取消。", pw1, pw2, MB_OK | MB_ICONINFORMATION, TRUE);
+        return EXIT_CANCELLED;
     }
 
     // 写入内容
@@ -179,7 +178,7 @@ int main(int argc, char **argv) {
     free2NULL(pw1);
     free2NULL(pw2);
 
-    return 0;
+    return EXIT_SUCCESS;
 }
 
 

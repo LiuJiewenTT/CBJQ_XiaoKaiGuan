@@ -11,5 +11,5 @@
 
 // 函数声明
 BOOL IsRunAsAdmin();
-BOOL RelaunchWithElevation(int argc, char *argv[]);
+INT RelaunchWithElevation(int argc, char *argv[]);
 
