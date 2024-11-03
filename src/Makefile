@@ -39,16 +39,18 @@ $(TARGET): $(OBJ)
 # build/%.o: src/%.c
 # 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(BUILD_DIR)program_info.o: $(SRC_DIR)program_info.c flag_every_time
+$(BUILD_DIR)program_info.o: $(SRC_DIR)program_info.c $(SRC_DIR)version.rc flag_every_time
 	@ echo Compiling $@
 	$(CC) $(CFLAGS) -c $< -o $@
 	
 $(BUILD_DIR)version.o: $(SRC_DIR)version.rc
 	@ echo Compiling $@
-	$(WINDRES) --preprocessor-arg="-DUNICODE" $< $@
+	$(WINDRES) $< $@
 #	$(WINDRES) $< $@
 
-$(BUILD_DIR)main.o: $(SRC_DIR)main.c
+$(BUILD_DIR)main.o: $(SRC_DIR)main.c \
+	$(SRC_DIR)program_info.h $(SRC_DIR)version.rc \
+	$(SRC_DIR)utils/ordinaries.h $(SRC_DIR)utils/ordinary_winutils.h $(SRC_DIR)utils/UAC_utils.h
 	@ echo Compiling $@
 	$(CC) $(CFLAGS) -c $< -o $@
 

@@ -1,6 +1,9 @@
 #ifndef PROGRAM_INFO_H
 #define PROGRAM_INFO_H
 
+#define UNICODE
+#define _UNICODE
+
 // 修改版本号去version.rc改
 #include "version.rc"
 #define PROGRAM_VERSION VER_PRODUCTVERSION_STR
@@ -39,5 +42,8 @@
     #define BUILDER "Unknown"
     #define BUILD_DESCRIPTION get_build_description()
 #endif
+
+const char *get_program_info_string();
+#define PROGRAM_INFO_STRING get_program_info_string()
 
 #endif  //  PROGRAM_INFO_H

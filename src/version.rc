@@ -1,5 +1,8 @@
 #pragma code_page(65001)
 
+#define UNICODE
+#define _UNICODE
+
 // 定义产品及程序名称
 #define PROGRAM_NAME_PRETTY         "尘白禁区小开关😎😋\0"
 #define INTERNAL_PROGRAM_NAME       "CBJQ_XiaoKaiGuan\0"
@@ -17,6 +20,9 @@
 #define AUTHOR_EMAIL                "liuljwtt@163.com\0"
 // 定义版权信息
 #define LEGALCOPYRIGHT              "MIT License from LiuJiewenTT\0"
+// 定义项目链接
+#define PROJECT_URL                 "https://github.com/LiuJiewen/CBJQ_XiaoKaiGuan\0"
+#define WEBSITE_URL                 "https://liuljwtt.github.io/CBJQ_XiaoKaiGuan/README\0"
 
 #ifdef RC_INVOKED
 #include <winver.h>
@@ -48,6 +54,8 @@ FILESUBTYPE 0x0L
             VALUE "LegalCopyright", LEGALCOPYRIGHT
             VALUE "Author", AUTHOR_NAME
             VALUE "Email", AUTHOR_EMAIL
+            VALUE "ProjectUrl", PROJECT_URL
+            VALUE "URL", WEBSITE_URL
         }
     }
     BLOCK "VarFileInfo"

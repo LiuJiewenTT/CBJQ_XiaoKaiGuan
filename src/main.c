@@ -6,7 +6,7 @@
 #include <stdio.h>
 #include <wchar.h>
 #include "utils/utils.h"
-#include "version.rc"
+#include "program_info.h"
 
 
 #define TEMPSTR_LENGTH 2048
@@ -21,6 +21,8 @@ int flag_unhide = 0;
 int main(int argc, char **argv) {
     printf("arg[0]=%s\n", argv[0]);
 
+    HWND hwnd = GetConsoleWindow();
+
     wchar_t *pw1 = NULL;
     wchar_t *pw2 = NULL;
     char tempstr1[TEMPSTR_LENGTH];
@@ -33,20 +35,31 @@ int main(int argc, char **argv) {
     int var_localization = -1;
     int var_localization_new = -1;
 
+    sprintf(tempstr1, "%s.unhide", argv[0]);
+    flag_unhide = file_exists(tempstr1);
+    if ( !flag_unhide ) {
+        ShowWindow(hwnd, SW_HIDE);
+        sprintf(tempstr1, "%s.log", argv[0]);
+        freopen(tempstr1, "w", stdout);
+        printf("hide. [PID=%d].\n", getpid());
+    }
+
     setlocale(LC_CTYPE, "C.UTF-8");
-    if ( GetConsoleOutputCP() != CP_UTF8 ) {
-        printf("Setting console output code page to UTF-8.\n");
+    
+    if ( ( ret = GetConsoleOutputCP() ) != CP_UTF8 ) {
+        printf("Setting console output code page from (%d) to UTF-8.\n", ret);
         SetConsoleOutputCP(CP_UTF8);
     }
-    if ( GetConsoleCP() != CP_UTF8 ) {
-        printf("Setting console code page to UTF-8.\n");
+    if ( ( ret = GetConsoleCP() ) != CP_UTF8 ) {
+        printf("Setting console code page from (%d) to UTF-8.\n", ret);
         SetConsoleCP(CP_UTF8);
     }
 
-    sprintf(tempstr1, "%s.unhide", argv[0]);
-    flag_unhide = file_exists(tempstr1);
-
     pw2 = WCharChar(PROGRAM_NAME_PRETTY);
+
+    #define program_info_divider "----------------------------------------------------------------\n"
+    printf("%s%hs\n%s", program_info_divider, PROGRAM_INFO_STRING, program_info_divider);
+    #undef program_info_divider
 
     // 检查自身UAC授权情况
     if (IsRunAsAdmin()) {

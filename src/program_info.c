@@ -35,3 +35,13 @@ const char *get_build_description(){
 }
 
 #endif
+
+
+const char *get_program_info_string(){
+    static char info_string[2048]={""};
+    if(!info_string[0]){
+        snprintf(info_string, 2048, "%hs v%hs\nAuthor: %hs\nEmail: %hs\nProject Homepage: %hs\nWebsite: %hs\n%hs %hs", PROGRAM_NAME_PRETTY, PROGRAM_VERSION, AUTHOR_NAME, AUTHOR_EMAIL, PROJECT_URL, WEBSITE_URL, BUILD_DESCRIPTION, BUILD_TIMEZONE);
+        info_string[2047] = 0;
+    }
+    return (const char*)info_string;
+}
