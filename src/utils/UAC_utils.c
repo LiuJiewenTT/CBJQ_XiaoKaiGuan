@@ -67,7 +67,12 @@ INT RelaunchWithElevation(int argc, char *argv[]) {
         return EXIT_FAILURE;
     }
 
-    // return TRUE;
+    // 获取子进程pid
+    DWORD pid;
+    pid = GetProcessId(sei.hProcess);
+    if (!pid) {
+        printf("GetProcessId failed (%d).\n", GetLastError());
+    }
 
     // 等待新进程结束
     WaitForSingleObject(sei.hProcess, INFINITE);
@@ -82,6 +87,7 @@ INT RelaunchWithElevation(int argc, char *argv[]) {
         CloseHandle(sei.hProcess);
         return EXIT_FAILURE;
     }
+    printf("[subprocess pid=%d], [exitCode=%d]\n", pid, exitCode);
 
     CloseHandle(sei.hProcess);
 

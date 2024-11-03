@@ -36,8 +36,8 @@ int main(int argc, char **argv) {
     char tempstr4[TEMPSTR_LENGTH];
     char tempstr5[TEMPSTR_LENGTH];
     int ret = 0;
-    int lastOutputCP = 0;
-    int lastCP = 0;
+    int previousOutputCP = 0;
+    int previousCP = 0;
     int process_global_cnt = 0;
     int process_user_cnt = 0;
     char path_delimeter= '\\';
@@ -50,12 +50,12 @@ int main(int argc, char **argv) {
 
     setlocale(LC_CTYPE, "C.UTF-8");
 
-    if ( ( lastOutputCP = GetConsoleOutputCP() ) != CP_UTF8 ) {
-        printf("Setting console output code page from (%d) to UTF-8.\n", lastOutputCP);
+    if ( ( previousOutputCP = GetConsoleOutputCP() ) != CP_UTF8 ) {
+        printf("Setting console output code page from (%d) to UTF-8.\n", previousOutputCP);
         SetConsoleOutputCP(CP_UTF8);
     }
-    if ( ( lastCP = GetConsoleCP() ) != CP_UTF8 ) {
-        printf("Setting console code page from (%d) to UTF-8.\n", lastCP);
+    if ( ( previousCP = GetConsoleCP() ) != CP_UTF8 ) {
+        printf("Setting console code page from (%d) to UTF-8.\n", previousCP);
         SetConsoleCP(CP_UTF8);
     }
 
@@ -93,6 +93,7 @@ int main(int argc, char **argv) {
         }
         printf("hide. [PID=%d].\n", getpid());
     }
+    printf("previousOutputCP=%d, previousCP=%d\n", previousOutputCP, previousCP);
 
     pw2 = WCharChar(PROGRAM_NAME_PRETTY);
 
