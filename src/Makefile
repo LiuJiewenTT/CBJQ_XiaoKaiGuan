@@ -21,6 +21,7 @@ SRC = $(SRC_DIR)main.c
 OBJ = \
 $(BUILD_DIR)main.o\
 $(BUILD_DIR)version.o\
+$(BUILD_DIR)resource.res\
 $(BUILD_DIR)ordinary_winutils.o\
 $(BUILD_DIR)UAC_utils.o\
 $(BUILD_DIR)program_info.o
@@ -50,11 +51,14 @@ $(BUILD_DIR)program_info.o: $(SRC_DIR)program_info.c $(SRC_DIR)version.rc flag_e
 	
 $(BUILD_DIR)version.o: $(SRC_DIR)version.rc
 	@ echo Compiling $@
-	$(WINDRES) $< $@
-#	$(WINDRES) $< $@
+	$(WINDRES) $< -o $@
+
+$(BUILD_DIR)resource.res: $(SRC_DIR)resource.rc $(SRC_DIR)resource.h
+	@ echo Compiling $@
+	$(WINDRES) $< -o $@
 
 $(BUILD_DIR)main.o: $(SRC_DIR)main.c \
-	$(SRC_DIR)program_info.h $(SRC_DIR)version.rc \
+	$(SRC_DIR)program_info.h $(SRC_DIR)version.rc $(SRC_DIR)resource.h\
 	$(SRC_DIR)utils/ordinaries.h $(SRC_DIR)utils/ordinary_winutils.h $(SRC_DIR)utils/UAC_utils.h
 	@ echo Compiling $@
 	$(CC) $(CFLAGS) -c $< -o $@

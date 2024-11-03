@@ -7,6 +7,7 @@
 #include <wchar.h>
 #include "utils/utils.h"
 #include "program_info.h"
+#include "resource.h"
 
 
 #define TEMPSTR_LENGTH 2048
@@ -26,6 +27,19 @@ int main(int argc, char **argv) {
     printf("arg[0]=%s\n", argv[0]);
 
     HWND hwnd = GetConsoleWindow();
+    HINSTANCE hInstance = GetModuleHandle(NULL); // 获取当前模块的实例句柄
+
+    // 定义窗口类
+    // WNDCLASS wc = {0};
+    // wc.hInstance = hInstance;
+
+    // 加载图标资源
+    // wc.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON1)); // 使用资源 ID 
+    // wc.hIconSm = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON1)); // 小图标（任务栏）
+    // 设置任务栏小图标
+    SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)LoadIcon(hInstance, MAKEINTRESOURCE(IDI_APP_ICON1)));
+    // 设置窗口大图标
+    SendMessage(hwnd, WM_SETICON, ICON_BIG, (LPARAM)LoadIcon(hInstance, MAKEINTRESOURCE(IDI_APP_ICON1)));
 
     wchar_t *pw1 = NULL;
     wchar_t *pw2 = NULL;

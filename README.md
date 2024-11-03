@@ -4,7 +4,7 @@
 
 这个项目很简单，只是为了方便不那么熟悉Windows系统各种操作的玩家直接开关小开关使用。
 
-<img src="res\icons_pic\芬妮-辉耀 团子.png" style="max-width:75%">
+<img src="res\icons_pic\芬妮-辉耀 团子.png" style="max-width:75%; margin:auto; display:block;">
 
 ## 项目历史
 
