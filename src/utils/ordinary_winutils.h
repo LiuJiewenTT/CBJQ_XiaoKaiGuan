@@ -11,7 +11,7 @@
 #include <tlhelp32.h>
 #include <accctrl.h>
 #include <sddl.h>
-#include <fcntl.h>
+#include <share.h>
 #include "ordinaries.h"
 
 
@@ -49,5 +49,5 @@ INT CountProcessRunning_Global(const wchar_t* processName);
 
 INT CountProcessRunning_User(const wchar_t* processName);
 
-BOOL RedirectStdOutput(const wchar_t* outputFilePath, BOOL append);
+BOOL RedirectOutput(const char* outputFilePath, BOOL append, FILE* output);
 

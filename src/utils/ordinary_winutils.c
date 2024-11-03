@@ -240,53 +240,26 @@ INT CountProcessRunning_User(const wchar_t* processName) {
 
 
 // 重定向标准输出到文件
-BOOL RedirectStdOutput(const wchar_t* outputFilePath, BOOL append) {
+BOOL RedirectOutput(const char* outputFilePath, BOOL append, FILE* output) {
     if (outputFilePath == NULL) {
         printf("Output file path cannot be NULL.\n");
         return FALSE;
     }
 
-    HANDLE hFile = CreateFile(outputFilePath, 
-                                append ? FILE_APPEND_DATA : GENERIC_WRITE, 
-                                FILE_SHARE_READ | FILE_SHARE_WRITE, 
-                                NULL, 
-                                append ? OPEN_ALWAYS : CREATE_ALWAYS, 
-                                FILE_ATTRIBUTE_NORMAL, 
-                                NULL);
+    // 共享文件，避免主进程和子进程产生冲突
+    FILE* file = _fsopen(outputFilePath, append ? "a" : "w", _SH_DENYNO);
+    if (file == NULL) {
+        printf("Error opening file.\n");
+        return FALSE;
+    }
     
-    if (hFile == INVALID_HANDLE_VALUE) {
-        printf("Error opening file: %u\n", GetLastError());
+    // 重定向输出到文件
+    if (_dup2(_fileno(file), _fileno(output)) != 0) {
+        printf("Error redirecting output.\n");
+        // CloseHandle(hFile);
         return FALSE;
     }
 
-    // 重定向标准输出
-    // if (!SetStdHandle(STD_OUTPUT_HANDLE, hFile)) {
-    //     printf("Error redirecting output: %u\n", GetLastError());
-    //     CloseHandle(hFile);
-    //     return FALSE;
-    // }
-    
-    // 获取与文件句柄关联的低级文件描述符
-    int fileDescriptor = _open_osfhandle((intptr_t)hFile, _O_TEXT);
-    if (fileDescriptor == -1) {
-        wprintf(L"Error obtaining file descriptor.\n");
-        CloseHandle(hFile);
-        return FALSE;
-    }
-
-    // 使用 _dup2 将 stdout 重定向到新的文件描述符
-    if (_dup2(fileDescriptor, _fileno(stdout)) != 0) {
-        wprintf(L"Error redirecting stdout.\n");
-        CloseHandle(hFile);
-        return FALSE;
-    }
-
-    // 使用 _dup2 将 stderr 也重定向到文件（可选）
-    if (_dup2(fileDescriptor, _fileno(stderr)) != 0) {
-        wprintf(L"Error redirecting stderr.\n");
-        CloseHandle(hFile);
-        return FALSE;
-    }
     return TRUE;
 }
 

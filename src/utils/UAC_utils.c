@@ -71,6 +71,9 @@ BOOL RelaunchWithElevation(int argc, char *argv[]) {
 
     // 等待新进程结束
     WaitForSingleObject(sei.hProcess, INFINITE);
+    // 移动到文件末尾
+    fseek(stdout, 0, SEEK_END); 
+    fseek(stderr, 0, SEEK_END); 
 
     // 获取新进程的返回值
     DWORD exitCode;

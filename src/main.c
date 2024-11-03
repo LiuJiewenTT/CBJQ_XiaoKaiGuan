@@ -22,7 +22,7 @@ int main(int argc, char **argv) {
     // 关闭输出缓冲
     setbuf(stdout, NULL);
     setbuf(stderr, NULL);
-    
+
     printf("arg[0]=%s\n", argv[0]);
 
     HWND hwnd = GetConsoleWindow();
@@ -80,11 +80,17 @@ int main(int argc, char **argv) {
     if ( !flag_unhide ) {
         // ShowWindow(hwnd, SW_HIDE);
         sprintf(tempstr1, "%s.log", argv[0]);
-        pw1 = WCharChar(tempstr1);
+        // pw1 = WCharChar(tempstr1);
         // freopen(tempstr1, "w", stdout);
         process_global_cnt = CountProcessRunning_Global(pw_process_name);
-        ret = RedirectStdOutput(pw1, (process_global_cnt > 1));
-        free2NULL(pw1);
+        ret = RedirectOutput(tempstr1, (process_global_cnt > 1), stdout);
+        // free2NULL(pw1);
+        if ( ret == FALSE ) {
+            printWCharFromCharAndShow("无法重定向输出。", pw1, pw2, MB_OK | MB_ICONERROR, TRUE);
+            return EXIT_FAILURE;
+        }
+        ret = RedirectOutput(tempstr1, (process_global_cnt > 1), stderr);
+        // free2NULL(pw1);
         if ( ret == FALSE ) {
             printWCharFromCharAndShow("无法重定向输出。", pw1, pw2, MB_OK | MB_ICONERROR, TRUE);
             return EXIT_FAILURE;
