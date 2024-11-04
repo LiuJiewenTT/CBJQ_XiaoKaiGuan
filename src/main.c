@@ -16,7 +16,7 @@
 
 int flag_unhide = 0;
 // int flag_need_UAC_start = 0;
-
+HANDLE g_hwnd = NULL;
 
 
 int main(int argc, char **argv) {
@@ -28,6 +28,15 @@ int main(int argc, char **argv) {
 
     HWND hwnd = GetConsoleWindow();
     HINSTANCE hInstance = GetModuleHandle(NULL); // 获取当前模块的实例句柄
+    // g_hwnd = hwnd;
+    MSGBOXPARAMS MsgPars;
+    MsgPars.cbSize = sizeof(MsgPars);
+    MsgPars.hwndOwner = NULL;
+    MsgPars.hInstance = hInstance;
+    MsgPars.lpszIcon = MAKEINTRESOURCE(IDI_APP_ICON1);
+    MsgPars.dwContextHelpId = 0;
+    MsgPars.lpfnMsgBoxCallback = NULL;
+    MsgPars.dwLanguageId = 0;
 
     // 定义窗口类
     // WNDCLASS wc = {0};
@@ -110,6 +119,7 @@ int main(int argc, char **argv) {
     printf("previousOutputCP=%d, previousCP=%d\n", previousOutputCP, previousCP);
 
     pw2 = WCharChar(PROGRAM_NAME_PRETTY);
+    MsgPars.lpszCaption = pw2;
 
     #define program_info_divider "----------------------------------------------------------------\n"
     printf("%s%hs\n%s", program_info_divider, PROGRAM_INFO_STRING, program_info_divider);
@@ -118,7 +128,13 @@ int main(int argc, char **argv) {
     process_user_cnt = CountProcessRunning_User(pw_process_name);
     if ( process_user_cnt > 2 ) {
         // 展示程序信息
-        printWCharFromCharAndShow(PROGRAM_INFO_STRING, pw1, pw2, MB_OK | MB_ICONINFORMATION, TRUE);
+        // printWCharFromCharAndShow(PROGRAM_INFO_STRING, pw1, pw2, MB_OK | MB_ICONINFORMATION, TRUE);
+        pw1 = WCharChar(PROGRAM_INFO_STRING);
+        MsgPars.lpszText = pw1;
+        // MsgPars.dwStyle = MB_OK | MB_ICONINFORMATION;
+        MsgPars.dwStyle = MB_OK | MB_USERICON;
+        MessageBoxIndirect(&MsgPars);
+        free2NULL(pw1);
         return EXIT_SUCCESS;
     }
 
@@ -169,7 +185,11 @@ int main(int argc, char **argv) {
    
     // 弹出确认对话框
     pw1 = WCharChar(tempstr3);
-    ret = MessageBox(NULL, pw1, pw2, MB_YESNO | MB_ICONQUESTION);
+    // ret = MessageBox(hwnd, pw1, pw2, MB_YESNO | MB_ICONQUESTION);
+    MsgPars.lpszText = pw1;
+    // MsgPars.dwStyle = MB_YESNO | MB_ICONQUESTION;
+    MsgPars.dwStyle = MB_YESNO | MB_USERICON;
+    ret = MessageBoxIndirect(&MsgPars);
     free2NULL(pw1);
 
     if ( ret == IDNO ) {

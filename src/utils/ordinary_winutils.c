@@ -29,14 +29,14 @@ void printCharAndShow(const char *para_str, wchar_t *para_pointer_wstr, const wc
     printf("%hs\n", para_str);  // 或%s也行
     para_pointer_wstr = convertCharToWChar(para_str);
 
-    MessageBox(NULL, para_pointer_wstr, para_MessageBox_Title, para_MessageBox_flag);
+    MessageBox(g_hwnd, para_pointer_wstr, para_MessageBox_Title, para_MessageBox_flag);
     return;
 }
 
 
 void printWCharAndShow(const wchar_t *para_str, const wchar_t *para_MessageBox_Title, int para_MessageBox_flag){
     wprintf(L"%ls\n", para_str);
-    MessageBox(NULL, para_str, para_MessageBox_Title, para_MessageBox_flag);
+    MessageBox(g_hwnd, para_str, para_MessageBox_Title, para_MessageBox_flag);
     return;
 }
 

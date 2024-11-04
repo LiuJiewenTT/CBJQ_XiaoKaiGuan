@@ -22,6 +22,8 @@ wchar_t *convertCharToWChar(const char* message);
 #define WCharChar(x) (convertCharToWChar(x))
 
 
+extern HANDLE g_hwnd;
+
 void printWCharFromCharAndShow(const char *para_str, wchar_t *para_pointer_wstr, const wchar_t *para_MessageBox_Title, int para_MessageBox_flag, int para_flag_free_wstr_message);
 
 void printCharAndShow(const char *para_str, wchar_t *para_pointer_wstr, const wchar_t *para_MessageBox_Title, int para_MessageBox_flag);
