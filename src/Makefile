@@ -55,7 +55,7 @@ $(BUILD_DIR)version.o: $(SRC_DIR)version.rc
 
 $(BUILD_DIR)resource.res: $(SRC_DIR)resource.rc $(SRC_DIR)resource.h
 	@ echo Compiling $@
-	$(WINDRES) $< -o $@
+	$(WINDRES) --preprocessor-arg="-DUNICODE" -i $< -O coff -o $@
 
 $(BUILD_DIR)main.o: $(SRC_DIR)main.c \
 	$(SRC_DIR)program_info.h $(SRC_DIR)version.rc $(SRC_DIR)resource.h\

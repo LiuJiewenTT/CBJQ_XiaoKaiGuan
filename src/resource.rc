@@ -1,3 +1,5 @@
+#pragma code_page(65001)
+
 #include "resource.h"
 
-IDI_APP_ICON1 ICON "../res/icons/icon1.ico"
+IDI_APP_ICON1 ICON "res\\icons\\icon1.ico"
