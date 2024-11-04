@@ -7,9 +7,9 @@
 
 ## 使用方法
 
-开启小开关：右键使用管理员权限启动`Enya_On.bat`；
+开启小开关：右键使用管理员权限启动[`Enya_On.bat`](alters/Enya_Switch/Enya_on.bat)；
 
-关闭小开关：右键使用管理员权限启动`Enya_Off.bat`。
+关闭小开关：右键使用管理员权限启动[`Enya_Off.bat`](alters/Enya_Switch/Enya_Off.bat)。
 
 ## 解释
 
