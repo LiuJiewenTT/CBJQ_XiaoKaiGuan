@@ -10,7 +10,7 @@ MAKE = mingw32-make.exe
 SRC_DIR = src/
 BUILD_DIR = build/build/
 DEST_DIR = build/dest/
-
+FLAG_ADMIN = false
 
 # 编译选项
 CFLAGS = -fdiagnostics-color=always -I"./"
@@ -21,7 +21,6 @@ SRC = $(SRC_DIR)main.c
 OBJ = \
 $(BUILD_DIR)main.o\
 $(BUILD_DIR)version.o\
-$(BUILD_DIR)resource.res\
 $(BUILD_DIR)ordinary_winutils.o\
 $(BUILD_DIR)UAC_utils.o\
 $(BUILD_DIR)program_info.o
@@ -29,6 +28,17 @@ $(BUILD_DIR)program_info.o
 # 目标可执行文件
 TARGET = $(DEST_DIR)CBJQ_XiaoKaiGuan.exe
 DEBUG_TARGET = $(DEST_DIR)CBJQ_XiaoKaiGuan_debug.exe
+
+ifeq ($(FLAG_ADMIN), true) 
+	OBJ += $(BUILD_DIR)resource_admin.res
+	ifeq ($(TARGET), $(DEBUG_TARGET))
+		TARGET = $(DEST_DIR)CBJQ_XiaoKaiGuan_admin_debug.exe
+	else
+		TARGET = $(DEST_DIR)CBJQ_XiaoKaiGuan_admin.exe
+	endif
+else
+	OBJ += $(BUILD_DIR)resource.res
+endif
 
 # 目标规则
 all: $(TARGET)
@@ -55,7 +65,11 @@ $(BUILD_DIR)version.o: $(SRC_DIR)version.rc
 
 $(BUILD_DIR)resource.res: $(SRC_DIR)resource.rc $(SRC_DIR)resource.h
 	@ echo Compiling $@
-	$(WINDRES) --preprocessor-arg="-DUNICODE" -i $< -O coff -o $@
+	$(WINDRES) -i $< -O coff -o $@
+
+$(BUILD_DIR)resource_admin.res: $(SRC_DIR)resource.rc $(SRC_DIR)resource.h
+	@ echo Compiling $@
+	$(WINDRES) --preprocessor-arg="-DCOMPILE_FLAG_ADMIN" -i $< -O coff -o $@
 
 $(BUILD_DIR)main.o: $(SRC_DIR)main.c \
 	$(SRC_DIR)program_info.h $(SRC_DIR)version.rc $(SRC_DIR)resource.h\

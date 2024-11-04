@@ -3,3 +3,7 @@
 #include "resource.h"
 
 IDI_APP_ICON1 ICON "res\\icons\\icon1.ico"
+
+#ifdef COMPILE_FLAG_ADMIN
+1 24 "src\\main.manifest"
+#endif
