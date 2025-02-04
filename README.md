@@ -1,10 +1,26 @@
+---
+date: 2025-02-04 19:48:00 +0800
+redirect_from:
+  - /README/
+permalink: /
+---
+
 # CBJQ_XiaoKaiGuan
 
 尘白禁区 *XiaoKaiGuan*（小开关😎😋）
 
 这个项目很简单，只是为了方便不那么熟悉Windows系统各种操作的玩家直接开关小开关使用。
 
-<img src="res\icons_pic\芬妮-辉耀 团子.png" style="max-width:75%; margin:auto; display:block;">
+<div style="align-items: center; justify-content: center; display: flex; margin: 10px;">
+   <img src="res\icons_pic\芬妮-辉耀 团子.png" style="max-width:75%; aspect-ratio: 1;">
+</div>
+
+<div style="align-items: center; justify-content: center; display: flex; margin: 10px; gap: 10px">
+   <img alt="GitHub Downloads (all assets, all releases)" src="https://img.shields.io/github/downloads/LiuJiewenTT/CBJQ_HugFenny-PC/total">
+   <img alt="GitHub Release" src="https://img.shields.io/github/v/release/LiuJiewenTT/CBJQ_HugFenny-PC">
+   <img alt="GitHub Actions Workflow Status" src="https://img.shields.io/github/actions/workflow/status/LiuJiewenTT/CBJQ_HugFenny-PC/jekyll-gh-pages.yml">
+   <img alt="GitHub License" src="https://img.shields.io/github/license/LiuJiewenTT/CBJQ_HugFenny-PC">
+</div>
 
 ## 项目历史
 
