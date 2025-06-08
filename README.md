@@ -22,9 +22,9 @@ permalink: /
    <img alt="GitHub License" src="https://img.shields.io/github/license/LiuJiewenTT/CBJQ_XiaoKaiGuan">
 </div>
 
-项目地址：[https://github.com/LiuJiewenTT/CBJQ_HugFenny](https://github.com/LiuJiewenTT/CBJQ_HugFenny)<br>
-项目主页：[https://LiuJiewenTT.github.io/CBJQ_HugFenny](https://LiuJiewenTT.github.io/CBJQ_HugFenny)<br>
-下载页：[https://github.com/LiuJiewenTT/CBJQ_HugFenny/releases](https://github.com/LiuJiewenTT/CBJQ_HugFenny/releases)<br>
+项目地址：[https://github.com/LiuJiewenTT/CBJQ_XiaoKaiGuan](https://github.com/LiuJiewenTT/CBJQ_XiaoKaiGuan)<br>
+项目主页：[https://LiuJiewenTT.github.io/CBJQ_XiaoKaiGuan](https://LiuJiewenTT.github.io/CBJQ_XiaoKaiGuan)<br>
+下载页：[https://github.com/LiuJiewenTT/CBJQ_XiaoKaiGuan/releases](https://github.com/LiuJiewenTT/CBJQ_XiaoKaiGuan/releases)<br>
 
 ## 项目历史
 
