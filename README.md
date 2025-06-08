@@ -12,7 +12,7 @@ permalink: /
 这个项目很简单，只是为了方便不那么熟悉Windows系统各种操作的玩家直接开关小开关使用。
 
 <div style="align-items: center; justify-content: center; display: flex; margin: 10px;">
-   <img src="res\icons_pic\芬妮-辉耀 团子.png" style="max-width:75%; aspect-ratio: 1;">
+   <img src="res\icons_pic\芬妮-辉耀 团子.png" style=" max-height: 300px; max-width:75%; aspect-ratio: 1;">
 </div>
 
 <div style="align-items: center; justify-content: center; display: flex; margin: 10px; gap: 10px">
@@ -21,6 +21,10 @@ permalink: /
    <img alt="GitHub Actions Workflow Status" src="https://img.shields.io/github/actions/workflow/status/LiuJiewenTT/CBJQ_XiaoKaiGuan/jekyll-gh-pages.yml">
    <img alt="GitHub License" src="https://img.shields.io/github/license/LiuJiewenTT/CBJQ_XiaoKaiGuan">
 </div>
+
+项目地址：[https://github.com/LiuJiewenTT/CBJQ_HugFenny](https://github.com/LiuJiewenTT/CBJQ_HugFenny)<br>
+项目主页：[https://LiuJiewenTT.github.io/CBJQ_HugFenny](https://LiuJiewenTT.github.io/CBJQ_HugFenny)<br>
+下载页：[https://github.com/LiuJiewenTT/CBJQ_HugFenny/releases](https://github.com/LiuJiewenTT/CBJQ_HugFenny/releases)<br>
 
 ## 项目历史
 
